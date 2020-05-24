@@ -74,9 +74,10 @@ class Yandex(object):
     if no credentials provided, falls back to environment variables
     `YANDEX_USER` and `YANDEX_KEY`.
     """
-    def __init__(self, api_user=None, api_key=None):
+    def __init__(self, api_user=None, api_key=None, proxies=None):
         self.api_user = api_user or os.environ['YANDEX_USER']
         self.api_key = api_key or os.environ['YANDEX_KEY']
+        self.proxies = proxies
 
     def _fetch_xml(self, query, page=0, group_by_domain=False):
         """ fetch xml from yandex web service """
@@ -94,7 +95,7 @@ class Yandex(object):
             'page': page,
             'groupby': GROUPBY_DEEP if group_by_domain else GROUPBY_FLAT
         }
-        res = requests.get(URL, params=params)
+        res = requests.get(URL, params=params, proxies=self.proxies)
         xml = res.content
         return xml
 
